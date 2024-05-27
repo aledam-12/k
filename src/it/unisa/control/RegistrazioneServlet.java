@@ -1,10 +1,10 @@
 package it.unisa.control;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,7 +24,21 @@ public class RegistrazioneServlet extends HttpServlet {
 		doPost(request, response);
 
 	}
-
+	private String toHash(String password) {		//metodo per criptare la password
+    	String hashString = null;
+    	try {
+    		java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-512");
+    		byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+    		hashString = "";
+    		for (int i = 0; i < hash.length; i++) {
+    			hashString += Integer.toHexString(
+    					(hash[i] & 0xFF) | 0x100).toLowerCase().substring(1,3); 
+    		}
+    	} catch (java.security.NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+    	return hashString;
+    }
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
@@ -34,7 +48,7 @@ public class RegistrazioneServlet extends HttpServlet {
 		String email = request.getParameter("email");
 		String dataNascita = request.getParameter("nascita");
 		String username = request.getParameter("us");
-		String pwd = request.getParameter("pw");
+		String pwd = toHash(request.getParameter("pw"));
 
         String[] parti = dataNascita.split("-");
         dataNascita = parti[2] + "-" + parti[1] + "-" + parti[0];
