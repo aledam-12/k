@@ -55,11 +55,9 @@ public class ProdottoDao implements ProdottoDaoInterfaccia{
 			preparedStatement.setString(9, product.getIva());
 			preparedStatement.setString(10, product.getImmagine());
 			preparedStatement.setString(11, product.getDescrizioneDettagliata());
-
-
-			preparedStatement.executeUpdate();
-
-			connection.commit();
+			if (controlloXSS(product.toString())) { preparedStatement.executeUpdate();
+			connection.commit();}
+			else return;
 		} finally {
 			try {
 				if (preparedStatement != null)
@@ -70,7 +68,10 @@ public class ProdottoDao implements ProdottoDaoInterfaccia{
 			}
 		}
 	}
-
+	boolean controlloXSS (String campo) {
+		if (campo.contains("<")) return false;
+		else return true;
+	}
 	@Override
 	public synchronized ProdottoBean doRetrieveByKey(int idProdotto) throws SQLException {
 		Connection connection = null;

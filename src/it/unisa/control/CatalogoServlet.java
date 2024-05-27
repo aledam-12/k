@@ -26,7 +26,7 @@ public class CatalogoServlet extends HttpServlet {
 		ProdottoBean bean = new ProdottoBean();
 		String sort = request.getParameter("sort");
 		String action = request.getParameter("action");
-		String redirectedPage = request.getParameter("page");;
+		String redirectedPage = request.getParameter("page");
 	
 		try {
 			if(action!=null) {
